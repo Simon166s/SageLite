@@ -2,8 +2,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from openai import OpenAI
 
+#To start the python app, in terminal:   uvicorn chatbot:app --reload
+
 #Import models with ollama pull llama3.2 for example before using
-model = "llama3.2" #To be changed
+model = "llama3.2:latest" #To be changed
 
 #The different personas that the user can choose
 persona = {
