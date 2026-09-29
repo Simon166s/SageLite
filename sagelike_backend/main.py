@@ -1,28 +1,33 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sagelike_backend.routers import chat
-from sagelike_backend.rag import initialize_knowledge_base
+import os
+import threading
+import time
+from .routers import chat
+from .rag import initialize_knowledge_base
 
-app = FastAPI(title="Local RAG Chatbot")
+app = FastAPI(title="SageLite Backend", version="1.0")
 
-# Enable CORS for frontend integration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"], 
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Initialize vector database on application startup
-initialize_knowledge_base()
-
-# Register API routers
 app.include_router(chat.router)
 
-@app.get("/")
-def root():
-    return {"status": "online", "message": "SageLite modular backend is running successfully."}
+@app.on_event("startup")
+async def startup_event():
+    initialize_knowledge_base()
 
-#uvicorn sagelike_backend.main:app --reload in terminal
-#http://127.0.0.1:8000/docs
+# Shutdown route for local desktop control
+@app.post("/shutdown")
+def shutdown_server():
+    def kill_process():
+        time.sleep(0.5)  # Brief pause to let the HTTP response finish sending
+        os._exit(0)      # Forcefully terminates the Uvicorn/Python process
+        
+    threading.Thread(target=kill_process).start()
+    return {"status": "Shutting down SageLite backend..."}
