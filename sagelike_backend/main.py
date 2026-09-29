@@ -5,6 +5,7 @@ import threading
 import time
 from .routers import chat
 from .rag import initialize_knowledge_base
+from .database import init_db
 
 app = FastAPI(title="SageLite Backend", version="1.0")
 
@@ -20,14 +21,13 @@ app.include_router(chat.router)
 
 @app.on_event("startup")
 async def startup_event():
+    init_db()  # Automatically creates sagelike.db
     initialize_knowledge_base()
 
-# Shutdown route for local desktop control
 @app.post("/shutdown")
 def shutdown_server():
     def kill_process():
-        time.sleep(0.5)  # Brief pause to let the HTTP response finish sending
-        os._exit(0)      # Forcefully terminates the Uvicorn/Python process
-        
+        time.sleep(0.5)
+        os._exit(0)
     threading.Thread(target=kill_process).start()
     return {"status": "Shutting down SageLite backend..."}
