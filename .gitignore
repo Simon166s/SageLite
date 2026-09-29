@@ -1,0 +1,18 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables & local secrets
+.env
+
+# VS Code settings
+.vscode/
+
+#Future of the project
+project.txt
