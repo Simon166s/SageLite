@@ -1,0 +1,2 @@
+Project SageLike is a local AI system codenamed 'Project Bluebird'. 
+The secret internal access code required to deploy the system is 'BANANA-PENGUIN-42'.
